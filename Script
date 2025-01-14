@@ -1,0 +1,66 @@
+-- Criação das tabelas Dimensão
+CREATE DATABASE professor;
+use professor;
+-- Dimensão: Professor
+CREATE TABLE Dim_Professor (
+    idProfessor INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Titulacao VARCHAR(50),
+    AnosDeExperiencia INT,
+    Status VARCHAR(20) -- Exemplo: 'Ativo', 'Aposentado', etc.
+);
+
+-- Dimensão: Departamento
+CREATE TABLE Dim_Departamento (
+    idDepartamento INT PRIMARY KEY,
+    NomeDepartamento VARCHAR(100),
+    Campus VARCHAR(50),
+    Coordenador VARCHAR(100)
+);
+
+-- Dimensão: Curso
+CREATE TABLE Dim_Curso (
+    idCurso INT PRIMARY KEY,
+    NomeCurso VARCHAR(100),
+    TipoCurso VARCHAR(50), -- Exemplo: 'Graduação', 'Pós-graduação', etc.
+    DuracaoEmAnos INT
+);
+
+-- Dimensão: Disciplina
+CREATE TABLE Dim_Disciplina (
+    idDisciplina INT PRIMARY KEY,
+    NomeDisciplina VARCHAR(100),
+    CargaHoraria FLOAT,
+    DepartamentoResponsavel VARCHAR(100)
+);
+
+-- Dimensão: Data
+CREATE TABLE Dim_Data (
+    idDataOferta INT PRIMARY KEY,
+    DataCompleta DATE,
+    Ano INT,
+    Mes INT,
+    Trimestre VARCHAR(10), -- Exemplo: 'Q1', 'Q2', etc.
+    Semestre VARCHAR(10), -- Exemplo: '1º Semestre', '2º Semestre'
+    DiaSemana VARCHAR(15) -- Exemplo: 'Segunda-feira', 'Terça-feira', etc.
+);
+
+-- Criação da Tabela Fato
+
+CREATE TABLE Fato_Professor (
+    idFatoProfessor INT PRIMARY KEY AUTO_INCREMENT,
+    idProfessor INT,
+    idDisciplina INT,
+    idCurso INT,
+    idDepartamento INT,
+    idDataOferta INT,
+    CargaHorariaDisciplina FLOAT,
+    NumeroDeAlunosMatriculados INT,
+    QuantidadeDisciplinasMinistradas INT,
+    NumeroCursosRelacionados INT,
+    FOREIGN KEY (idProfessor) REFERENCES Dim_Professor(idProfessor),
+    FOREIGN KEY (idDisciplina) REFERENCES Dim_Disciplina(idDisciplina),
+    FOREIGN KEY (idCurso) REFERENCES Dim_Curso(idCurso),
+    FOREIGN KEY (idDepartamento) REFERENCES Dim_Departamento(idDepartamento),
+    FOREIGN KEY (idDataOferta) REFERENCES Dim_Data(idDataOferta)
+);
